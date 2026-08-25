@@ -3,6 +3,7 @@ import sys
 from pathlib import Path
 
 import torch
+from torch.nn import functional as F
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
@@ -47,8 +48,16 @@ def main() -> None:
     with torch.no_grad():
         reference_y = reference(x)
         local_hidden = tp_mlp.gelu(tp_mlp.c_fc(x))
+        y_partial = F.linear(local_hidden, tp_mlp.c_proj.weight, bias=None)
 
     if args.trace:
+        rank0_print(
+            "\nMegatron-style TP regions in this implementation:\n"
+            "  copy_to_tensor_parallel_region: forward identity, backward all_reduce\n"
+            "  reduce_from_tensor_parallel_region: forward all_reduce, backward identity\n"
+            "  scatter/gather exist for boundaries that really split or rebuild activations;\n"
+            "  the MLP hidden state stays sharded between c_fc and c_proj.\n"
+        )
         ordered_print(
             "before row-parallel projection",
             c_fc_weight_shard=tp_mlp.c_fc.weight,
@@ -56,6 +65,7 @@ def main() -> None:
             local_hidden=local_hidden,
             c_proj_weight_shard=tp_mlp.c_proj.weight,
             c_proj_bias=tp_mlp.c_proj.bias,
+            y_partial_before_all_reduce=y_partial,
         )
 
     with torch.no_grad():

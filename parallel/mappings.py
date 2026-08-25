@@ -22,6 +22,11 @@ def _split_last_dim(x: torch.Tensor) -> torch.Tensor:
     """Return this rank's shard after splitting the last tensor dimension."""
     if world_size() == 1:
         return x
+    if x.size(-1) % world_size() != 0:
+        raise ValueError(
+            f"Cannot split last dimension of size {x.size(-1)} "
+            f"across {world_size()} tensor-parallel ranks."
+        )
     chunks = torch.chunk(x, world_size(), dim=-1)
     return chunks[rank()].contiguous()
 
@@ -36,7 +41,7 @@ def _gather_last_dim(x: torch.Tensor) -> torch.Tensor:
 
 
 class _CopyToTensorParallelRegion(torch.autograd.Function):
-    """Identity in forward, all-reduce in backward.
+    """Megatron-style TP region entry: identity in forward, all-reduce in backward.
 
     Column-parallel layers consume replicated input in forward, so no
     communication is needed before the local matmul. In backward, every rank
@@ -54,7 +59,7 @@ class _CopyToTensorParallelRegion(torch.autograd.Function):
 
 
 class _ReduceFromTensorParallelRegion(torch.autograd.Function):
-    """All-reduce in forward, identity in backward.
+    """Megatron-style TP region exit: all-reduce in forward, identity in backward.
 
     Row-parallel layers produce partial outputs. Summing them reconstructs the
     full residual-stream tensor on every rank. The backward pass receives a
@@ -72,7 +77,7 @@ class _ReduceFromTensorParallelRegion(torch.autograd.Function):
 
 
 class _ScatterToTensorParallelRegion(torch.autograd.Function):
-    """Split the last dimension in forward, gather gradient shards in backward."""
+    """Shard a replicated tensor in forward, gather shard gradients in backward."""
 
     @staticmethod
     def forward(ctx, x: torch.Tensor) -> torch.Tensor:
@@ -84,7 +89,7 @@ class _ScatterToTensorParallelRegion(torch.autograd.Function):
 
 
 class _GatherFromTensorParallelRegion(torch.autograd.Function):
-    """Gather last-dimension shards in forward, split gradients in backward."""
+    """Rebuild a replicated tensor in forward, split gradients in backward."""
 
     @staticmethod
     def forward(ctx, x: torch.Tensor) -> torch.Tensor:
@@ -96,7 +101,7 @@ class _GatherFromTensorParallelRegion(torch.autograd.Function):
 
 
 def copy_to_tensor_parallel_region(x: torch.Tensor) -> torch.Tensor:
-    """Mark a replicated tensor as entering a tensor-parallel region."""
+    """Mark a replicated tensor as entering TP; this is not a forward scatter."""
     return _CopyToTensorParallelRegion.apply(x)
 
 

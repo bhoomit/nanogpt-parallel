@@ -16,6 +16,7 @@ from parallel.linear import (
     copy_linear_to_column_parallel,
     copy_linear_to_row_parallel,
 )
+from parallel.mappings import scatter_to_tensor_parallel_region
 from parallel.mlp import TensorParallelMLP, copy_mlp_to_tensor_parallel
 
 
@@ -110,12 +111,22 @@ def test_tp_mlp_forward_backward_matches_nanogpt_mlp() -> None:
     torch.testing.assert_close(tp.c_proj.bias.grad, ref.c_proj.bias.grad, rtol=1e-6, atol=1e-6)
 
 
+def test_scatter_requires_even_last_dimension() -> None:
+    try:
+        scatter_to_tensor_parallel_region(torch.randn(2, 3))
+    except ValueError as exc:
+        assert "Cannot split last dimension" in str(exc)
+    else:
+        raise AssertionError("scatter should reject non-divisible last dimensions")
+
+
 def main() -> None:
     init_distributed(expected_world_size=2)
     try:
         test_column_parallel_linear_forward_backward()
         test_row_parallel_linear_forward_backward()
         test_tp_mlp_forward_backward_matches_nanogpt_mlp()
+        test_scatter_requires_even_last_dimension()
         rank0_print("distributed TP correctness tests passed")
     finally:
         destroy_distributed()

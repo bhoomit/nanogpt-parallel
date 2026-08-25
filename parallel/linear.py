@@ -67,6 +67,8 @@ class ColumnParallelLinear(nn.Module):
         Gathering is optional; the MLP deliberately leaves this hidden activation
         sharded so the following row-parallel projection can consume it directly.
         """
+        # Megatron-style "copy to TP region": no forward communication. It only
+        # teaches autograd to all-reduce the replicated input gradient later.
         x_parallel = copy_to_tensor_parallel_region(x)
         local_y = F.linear(x_parallel, self.weight, self.bias)
         if not self.gather_output or self.tp_world_size == 1:
@@ -124,6 +126,8 @@ class RowParallelLinear(nn.Module):
         else:
             local_x = scatter_to_tensor_parallel_region(x)
         y = F.linear(local_x, self.weight, None)
+        # Megatron-style "reduce from TP region": this is the forward all-reduce
+        # that sums rank-local partial outputs back into a replicated tensor.
         y = reduce_from_tensor_parallel_region(y)
         if self.bias is not None:
             y = y + self.bias

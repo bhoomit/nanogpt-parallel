@@ -1,6 +1,6 @@
 # nanoGPT With Parallelism, From First Principles
 
-[![tests](https://github.com/OWNER/REPO/actions/workflows/tests.yml/badge.svg)](https://github.com/OWNER/REPO/actions/workflows/tests.yml)
+[![tests](https://github.com/bhoomitvasani/nanogpt_parallel/actions/workflows/tests.yml/badge.svg)](https://github.com/bhoomitvasani/nanogpt_parallel/actions/workflows/tests.yml)
 
 One small mechanism at a time.
 
@@ -33,6 +33,21 @@ show exactly where communication is required
 then package the idea into reusable modules
 ```
 
+The tensor-parallel MLP section deliberately has two layers:
+
+```text
+minimal forward math:
+  replicated x -> local c_fc shard -> local GELU -> local c_proj shard
+  -> all_reduce partial outputs
+
+Megatron-style TP regions:
+  name the same boundaries as forward/backward pairs so autograd is correct
+```
+
+This matters because a function like `copy_to_tensor_parallel_region` is
+intuitive as a region boundary, but it is not a forward scatter. It is identity
+in forward and an all-reduce in backward.
+
 This is an educational fork built on Karpathy's open-source nanoGPT, not an
 official nanoGPT project.
 
@@ -44,12 +59,12 @@ official nanoGPT project.
 
 ## Launch The Notebook
 
-These links will work after this fork is pushed to a public GitHub repo. Replace
-`OWNER/REPO` with the published repository path.
+These links work after this fork is pushed to
+`bhoomitvasani/nanogpt_parallel`.
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/OWNER/REPO/blob/main/notebooks/01_tp_mlp_from_first_principles.ipynb)
-[![Open In Kaggle](https://kaggle.com/static/images/open-in-kaggle.svg)](https://www.kaggle.com/notebooks/welcome?src=https://github.com/OWNER/REPO/blob/main/notebooks/01_tp_mlp_from_first_principles.ipynb)
-[![Launch Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/OWNER/REPO/main?labpath=notebooks/01_tp_mlp_from_first_principles.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/bhoomitvasani/nanogpt_parallel/blob/main/notebooks/01_tp_mlp_from_first_principles.ipynb)
+[![Open In Kaggle](https://kaggle.com/static/images/open-in-kaggle.svg)](https://www.kaggle.com/notebooks/welcome?src=https://github.com/bhoomitvasani/nanogpt_parallel/blob/main/notebooks/01_tp_mlp_from_first_principles.ipynb)
+[![Launch Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/bhoomitvasani/nanogpt_parallel/main?labpath=notebooks/01_tp_mlp_from_first_principles.ipynb)
 
 Free runtime notes:
 
@@ -90,6 +105,15 @@ Current scope: this section validates forward and backward equivalence for
 tensor-parallel linear layers and the nanoGPT MLP. Optimizer-state ownership and
 checkpoint mappings come later in the series.
 
+Megatron-style TP region functions used in the robust implementation:
+
+| Region function | Forward | Backward |
+| --- | --- | --- |
+| `copy_to_tensor_parallel_region` | identity | `all_reduce(SUM)` |
+| `reduce_from_tensor_parallel_region` | `all_reduce(SUM)` | identity |
+| `scatter_to_tensor_parallel_region` | split last dim | gather last dim |
+| `gather_from_tensor_parallel_region` | gather last dim | split last dim |
+
 Run the correctness tests:
 
 ```bash
@@ -105,8 +129,8 @@ published.
 | ---: | --- | --- |
 | 1 | Why nanoGPT is the right skeleton | Keep original `model.py` as reference |
 | 2 | Tensor-parallel MLP | Shard `c_fc` and `c_proj`; match nanoGPT MLP |
-| 3 | Column-parallel linear layers | Trace scatter/gather decisions with tiny tensors |
-| 4 | Row-parallel linear layers | Trace partial outputs and all-reduce |
+| 3 | Megatron-style TP regions | Explain copy/reduce/scatter/gather as forward/backward pairs |
+| 4 | Column-parallel and row-parallel layers | Compose CPL + RPL without gathering hidden activations |
 | 5 | Tensor-parallel attention heads | Shard QKV heads and output projection |
 | 6 | Tensor-parallel transformer block | Compose TP attention and TP MLP |
 | 7 | Pipeline parallelism | Split transformer blocks into stages |
