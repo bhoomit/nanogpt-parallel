@@ -51,6 +51,13 @@ in forward and an all-reduce in backward.
 This is an educational fork built on Karpathy's open-source nanoGPT, not an
 official nanoGPT project.
 
+## Provenance
+
+This repository preserves nanoGPT's original git history and contributor
+attribution. The parallelism work in this fork starts after the upstream
+nanoGPT commit `3adf61e` and is maintained separately as
+`bhoomit/nanogpt-parallel`.
+
 ## Related Reading
 
 - [NVIDIA Megatron Core Parallelism Strategies Guide](https://docs.nvidia.com/megatron-core/developer-guide/latest/user-guide/parallelism-guide.html): production terminology and configuration guidance for TP, PP, CP, and EP.
