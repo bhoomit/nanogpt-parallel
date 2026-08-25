@@ -10,3 +10,6 @@ __pycache__/
 input.txt
 env/
 venv/
+
+# Substack draft material; notebooks and runnable labs are the repo artifacts.
+blog/**/*.md
