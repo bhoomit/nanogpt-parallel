@@ -1,0 +1,39 @@
+name: tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install CPU test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install --index-url https://download.pytorch.org/whl/cpu torch
+          python -m pip install numpy pytest
+
+      - name: Compile Python files
+        run: |
+          python -m py_compile \
+            parallel/distributed.py \
+            parallel/mappings.py \
+            parallel/linear.py \
+            parallel/mlp.py \
+            labs/01_minimal_tp_mlp.py \
+            labs/02_tp_mlp.py \
+            tests/test_tp_mlp_static.py \
+            tests/test_distributed_tp_correctness.py \
+            tests/distributed_tp_correctness.py
+
+      - name: Run tests
+        run: python -m pytest tests -q
