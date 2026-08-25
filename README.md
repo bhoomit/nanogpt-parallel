@@ -1,6 +1,6 @@
 # nanoGPT With Parallelism, From First Principles
 
-[![tests](https://github.com/bhoomitvasani/nanogpt_parallel/actions/workflows/tests.yml/badge.svg)](https://github.com/bhoomitvasani/nanogpt_parallel/actions/workflows/tests.yml)
+[![tests](https://github.com/bhoomit/nanogpt-parallel/actions/workflows/tests.yml/badge.svg)](https://github.com/bhoomit/nanogpt-parallel/actions/workflows/tests.yml)
 
 One small mechanism at a time.
 
@@ -60,11 +60,11 @@ official nanoGPT project.
 ## Launch The Notebook
 
 These links work after this fork is pushed to
-`bhoomitvasani/nanogpt_parallel`.
+`bhoomit/nanogpt-parallel`.
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/bhoomitvasani/nanogpt_parallel/blob/main/notebooks/01_tp_mlp_from_first_principles.ipynb)
-[![Open In Kaggle](https://kaggle.com/static/images/open-in-kaggle.svg)](https://www.kaggle.com/notebooks/welcome?src=https://github.com/bhoomitvasani/nanogpt_parallel/blob/main/notebooks/01_tp_mlp_from_first_principles.ipynb)
-[![Launch Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/bhoomitvasani/nanogpt_parallel/main?labpath=notebooks/01_tp_mlp_from_first_principles.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/bhoomit/nanogpt-parallel/blob/main/notebooks/01_tp_mlp_from_first_principles.ipynb)
+[![Open In Kaggle](https://kaggle.com/static/images/open-in-kaggle.svg)](https://www.kaggle.com/notebooks/welcome?src=https://github.com/bhoomit/nanogpt-parallel/blob/main/notebooks/01_tp_mlp_from_first_principles.ipynb)
+[![Launch Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/bhoomit/nanogpt-parallel/main?labpath=notebooks/01_tp_mlp_from_first_principles.ipynb)
 
 Free runtime notes:
 
