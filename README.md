@@ -137,22 +137,22 @@ python -m pytest tests -q
 These entries are the roadmap. Each row links to the canonical GitHub artifact
 as soon as that section exists.
 
-| # | Section | First-principles implementation |
-| ---: | --- | --- |
-| 1 | [Why nanoGPT is the right skeleton](README_NANOGPT.md) | Keep original [`model.py`](model.py) as reference |
-| 2 | [Tensor-parallel MLP](notebooks/01_tp_mlp_from_first_principles.ipynb) | Shard `c_fc` and `c_proj`; run [`labs/01_minimal_tp_mlp.py`](labs/01_minimal_tp_mlp.py) |
-| 3 | [Megatron-style TP regions](labs/03_tp_regions.py) | Explain copy/reduce/scatter/gather as forward/backward pairs in [`parallel/mappings.py`](parallel/mappings.py) |
-| 4 | [Column-parallel and row-parallel layers](parallel/linear.py) | Compose CPL + RPL in [`parallel/mlp.py`](parallel/mlp.py) and trace [`labs/02_tp_mlp.py`](labs/02_tp_mlp.py) |
-| 5 | Tensor-parallel attention heads | Shard QKV heads and output projection |
-| 6 | Tensor-parallel transformer block | Compose TP attention and TP MLP |
-| 7 | Pipeline parallelism | Split transformer blocks into stages |
-| 8 | Pipeline microbatches | Show bubbles with a tiny schedule |
-| 9 | Sequence parallelism | Shard token activations |
-| 10 | Context parallel attention | Move long-context K/V blocks |
-| 11 | Expert parallelism | Route tokens to expert MLPs |
-| 12 | All-to-all for MoE | Trace dispatch and combine |
-| 13 | Sharded checkpoints | Save and load rank-local shards |
-| 14 | Putting the pieces together | Final map, limits, and tradeoffs |
+| # | Section | Notebook | First-principles implementation |
+| ---: | --- | --- | --- |
+| 1 | [Why nanoGPT is the right skeleton](README_NANOGPT.md) | TBD | Keep original [`model.py`](model.py) as reference |
+| 2 | [Tensor-parallel MLP](notebooks/01_tp_mlp_from_first_principles.ipynb) | [Colab](https://colab.research.google.com/github/bhoomit/nanogpt-parallel/blob/main/notebooks/01_tp_mlp_from_first_principles.ipynb) / [Kaggle](https://www.kaggle.com/notebooks/welcome?src=https://github.com/bhoomit/nanogpt-parallel/blob/main/notebooks/01_tp_mlp_from_first_principles.ipynb) / [Binder](https://mybinder.org/v2/gh/bhoomit/nanogpt-parallel/main?labpath=notebooks/01_tp_mlp_from_first_principles.ipynb) | Shard `c_fc` and `c_proj`; run [`labs/01_minimal_tp_mlp.py`](labs/01_minimal_tp_mlp.py) |
+| 3 | [Megatron-style TP regions](labs/03_tp_regions.py) | TBD | Explain copy/reduce/scatter/gather as forward/backward pairs in [`parallel/mappings.py`](parallel/mappings.py) |
+| 4 | [Column-parallel and row-parallel layers](parallel/linear.py) | TBD | Compose CPL + RPL in [`parallel/mlp.py`](parallel/mlp.py) and trace [`labs/02_tp_mlp.py`](labs/02_tp_mlp.py) |
+| 5 | Tensor-parallel attention heads | TBD | Shard QKV heads and output projection |
+| 6 | Tensor-parallel transformer block | TBD | Compose TP attention and TP MLP |
+| 7 | Pipeline parallelism | TBD | Split transformer blocks into stages |
+| 8 | Pipeline microbatches | TBD | Show bubbles with a tiny schedule |
+| 9 | Sequence parallelism | TBD | Shard token activations |
+| 10 | Context parallel attention | TBD | Move long-context K/V blocks |
+| 11 | Expert parallelism | TBD | Route tokens to expert MLPs |
+| 12 | All-to-all for MoE | TBD | Trace dispatch and combine |
+| 13 | Sharded checkpoints | TBD | Save and load rank-local shards |
+| 14 | Putting the pieces together | TBD | Final map, limits, and tradeoffs |
 
 ## Original nanoGPT
 
