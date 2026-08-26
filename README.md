@@ -128,15 +128,15 @@ python -m pytest tests -q
 
 ## Table Of Contents
 
-These entries are the roadmap. They will become links as each section is
-published and implemented.
+These entries are the roadmap. Each row links to the canonical GitHub artifact
+as soon as that section exists.
 
 | # | Section | First-principles implementation |
 | ---: | --- | --- |
-| 1 | Why nanoGPT is the right skeleton | Keep original `model.py` as reference |
-| 2 | Tensor-parallel MLP | Shard `c_fc` and `c_proj`; match nanoGPT MLP |
-| 3 | Megatron-style TP regions | Explain copy/reduce/scatter/gather as forward/backward pairs |
-| 4 | Column-parallel and row-parallel layers | Compose CPL + RPL without gathering hidden activations |
+| 1 | [Why nanoGPT is the right skeleton](README_NANOGPT.md) | Keep original [`model.py`](model.py) as reference |
+| 2 | [Tensor-parallel MLP](notebooks/01_tp_mlp_from_first_principles.ipynb) | Shard `c_fc` and `c_proj`; run [`labs/01_minimal_tp_mlp.py`](labs/01_minimal_tp_mlp.py) |
+| 3 | [Megatron-style TP regions](parallel/mappings.py) | Explain copy/reduce/scatter/gather as forward/backward pairs |
+| 4 | [Column-parallel and row-parallel layers](parallel/linear.py) | Compose CPL + RPL in [`parallel/mlp.py`](parallel/mlp.py) and trace [`labs/02_tp_mlp.py`](labs/02_tp_mlp.py) |
 | 5 | Tensor-parallel attention heads | Shard QKV heads and output projection |
 | 6 | Tensor-parallel transformer block | Compose TP attention and TP MLP |
 | 7 | Pipeline parallelism | Split transformer blocks into stages |
