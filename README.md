@@ -66,8 +66,7 @@ nanoGPT commit `3adf61e` and is maintained separately as
 
 ## Launch The Notebook
 
-These links work after this fork is pushed to
-`bhoomit/nanogpt-parallel`.
+Open the first notebook from the public repo:
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/bhoomit/nanogpt-parallel/blob/main/notebooks/01_tp_mlp_from_first_principles.ipynb)
 [![Open In Kaggle](https://kaggle.com/static/images/open-in-kaggle.svg)](https://www.kaggle.com/notebooks/welcome?src=https://github.com/bhoomit/nanogpt-parallel/blob/main/notebooks/01_tp_mlp_from_first_principles.ipynb)
@@ -93,14 +92,14 @@ Binder: useful for public demos, but PyTorch startup can be slower.
 | Attention output projection | Row parallel | `all_reduce(SUM)` |
 | Plain LayerNorm | Replicated | None |
 | Sequence-parallel boundary | Sequence parallel | `all_gather` or `reduce_scatter` |
-| LoRA / small adapters | Framework-specific | Often replicated for SP; TP may mirror the base layer |
+| LoRA / adapters | Framework-specific | Often replicated for SP; TP may mirror the base layer |
 
 Rule of thumb: shard the big matrices and expanded activations when savings
-dominate communication; replicate tiny trainable updates like many LoRA adapters
-when communication would dominate the memory saved. A TP'd base MLP does not
-force one universal LoRA strategy: frameworks may replicate adapter parameters
-under SP, mirror the base layer's TP layout, or disable specific communication
-paths when the adapter is too small to justify them.
+dominate communication; replicate small adapter parameters when communication
+would dominate the memory saved. A TP'd base layer does not force one universal
+LoRA strategy: frameworks may replicate adapter parameters under SP, mirror the
+base layer's TP layout, or disable specific communication paths when the adapter
+is too small to justify them.
 
 Run:
 
@@ -129,8 +128,8 @@ python -m pytest tests -q
 
 ## Table Of Contents
 
-These entries start as a roadmap and will become links as each section is
-published.
+These entries are the roadmap. They will become links as each section is
+published and implemented.
 
 | # | Section | First-principles implementation |
 | ---: | --- | --- |
