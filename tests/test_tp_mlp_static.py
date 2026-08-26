@@ -5,6 +5,7 @@ def test_tp_mlp_lab_exists():
     root = Path(__file__).resolve().parents[1]
     assert (root / "labs" / "01_minimal_tp_mlp.py").exists()
     assert (root / "labs" / "02_tp_mlp.py").exists()
+    assert (root / "labs" / "03_tp_regions.py").exists()
     assert (root / "parallel" / "mlp.py").exists()
     assert (root / "parallel" / "linear.py").exists()
     assert (root / "parallel" / "mappings.py").exists()

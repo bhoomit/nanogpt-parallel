@@ -31,6 +31,7 @@ jobs:
             parallel/mlp.py \
             labs/01_minimal_tp_mlp.py \
             labs/02_tp_mlp.py \
+            labs/03_tp_regions.py \
             tests/test_tp_mlp_static.py \
             tests/test_distributed_tp_correctness.py \
             tests/distributed_tp_correctness.py

@@ -120,6 +120,12 @@ Megatron-style TP region functions used in the robust implementation:
 | `scatter_to_tensor_parallel_region` | split last dim | gather last dim |
 | `gather_from_tensor_parallel_region` | gather last dim | split last dim |
 
+Run the TP-region lab:
+
+```bash
+torchrun --standalone --nproc-per-node=2 labs/03_tp_regions.py
+```
+
 Run the correctness tests:
 
 ```bash
@@ -135,7 +141,7 @@ as soon as that section exists.
 | ---: | --- | --- |
 | 1 | [Why nanoGPT is the right skeleton](README_NANOGPT.md) | Keep original [`model.py`](model.py) as reference |
 | 2 | [Tensor-parallel MLP](notebooks/01_tp_mlp_from_first_principles.ipynb) | Shard `c_fc` and `c_proj`; run [`labs/01_minimal_tp_mlp.py`](labs/01_minimal_tp_mlp.py) |
-| 3 | [Megatron-style TP regions](parallel/mappings.py) | Explain copy/reduce/scatter/gather as forward/backward pairs |
+| 3 | [Megatron-style TP regions](labs/03_tp_regions.py) | Explain copy/reduce/scatter/gather as forward/backward pairs in [`parallel/mappings.py`](parallel/mappings.py) |
 | 4 | [Column-parallel and row-parallel layers](parallel/linear.py) | Compose CPL + RPL in [`parallel/mlp.py`](parallel/mlp.py) and trace [`labs/02_tp_mlp.py`](labs/02_tp_mlp.py) |
 | 5 | Tensor-parallel attention heads | Shard QKV heads and output projection |
 | 6 | Tensor-parallel transformer block | Compose TP attention and TP MLP |
